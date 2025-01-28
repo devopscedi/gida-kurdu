@@ -1,0 +1,185 @@
+# Güvenilir Gıda API Entegrasyonu Dokümantasyonu
+
+## 1. API Genel Bilgiler
+
+### Base URL
+```
+https://guvenilirgida.tarimorman.gov.tr/GuvenilirGida/GKD/DataTablesList
+```
+
+### API Özellikleri
+- HTTP Metodu: POST
+- Content-Type: application/x-www-form-urlencoded
+- Response Format: JSON
+- Karakter Seti: UTF-8
+
+### Gerekli Headers
+```swift
+request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+request.setValue("XMLHttpRequest", forHTTPHeaderField: "X-Requested-With")
+request.setValue("application/json", forHTTPHeaderField: "Accept")
+request.setValue("https://guvenilirgida.tarimorman.gov.tr", forHTTPHeaderField: "Origin")
+request.setValue("https://guvenilirgida.tarimorman.gov.tr/GuvenilirGida/GKD/Index", forHTTPHeaderField: "Referer")
+```
+
+## 2. Request Parametreleri
+
+### Zorunlu Parametreler
+```swift
+"draw": String              // Sayfa numarası + 1
+"start": String            // Başlangıç indeksi (page * pageSize)
+"length": String           // Sayfa başına kayıt sayısı
+"search[value]": String    // Arama metni (boş bırakılabilir)
+"search[regex]": "false"   // Regex kullanımı
+"order[0][column]": "0"    // Sıralama kolonu
+"order[0][dir]": "desc"    // Sıralama yönü
+"Order[0][column]": "DuyuruTarihi"  // Sıralama için kolon adı
+"Order[0][dir]": "desc"    // Sıralama yönü
+```
+
+### Sabit Parametreler
+```swift
+"KamuoyuDuyuruAra.IdariYaptirimYasalDayanakIdler": "2,20"
+"KamuoyuDuyuruAra.IdariYaptirimYasalDayanakId": ""
+"SiteYayinDurumu": "True"
+"_KamuoyuDuyuruAra_UrunGrupId": ""
+"KamuoyuDuyuruAra.UrunGrupId": ""
+```
+
+### Kolon Parametreleri
+Her kolon için aşağıdaki parametreler gönderilmelidir:
+```swift
+"columns[index][data]": column
+"columns[index][name]": column
+"columns[index][searchable]": "true"
+"columns[index][orderable]": "true"
+"columns[index][search][value]": ""
+"columns[index][search][regex]": "false"
+```
+
+Kolonlar:
+- DuyuruTarihi
+- FirmaAdi
+- Marka
+- UrunAdi
+- Uygunsuzluk
+- PartiSeriNo
+- FirmaIlce
+- FirmaIl
+- UrunGrupAdi
+
+### Tarih Filtresi
+Tarih filtresi eklemek için:
+```swift
+"KamuoyuDuyuruAra.DuyuruTarihi": "dd.MM.yyyy" // Örnek: "01.01.2024"
+```
+
+## 3. Response Format
+
+### Başarılı Response
+```swift
+struct DataTablesResponse: Codable {
+    let data: [FoodItem]           // Gıda kayıtları
+    let draw: Int                  // Sayfa numarası
+    let recordsTotal: Int          // Toplam kayıt sayısı
+    let recordsFiltered: Int       // Filtrelenmiş kayıt sayısı
+}
+```
+
+### FoodItem Model
+```swift
+struct FoodItem: Codable, Identifiable, Equatable {
+    var id: String                 // Benzersiz ID (duyuruTarihi'nden oluşturulur)
+    let duyuruTarihi: Date        // Duyuru tarihi
+    let firmaAdi: String          // Firma adı
+    let marka: String             // Marka
+    let urunAdi: String           // Ürün adı
+    let uygunsuzluk: String       // Uygunsuzluk detayı
+    let partiSeriNo: String       // Parti/Seri no
+    let firmaIl: String           // Firma ili
+    let firmaIlce: String         // Firma ilçesi
+    let urunGrupAdi: String       // Ürün grubu adı
+}
+```
+
+## 4. Önemli Notlar
+
+### Tarih Formatı
+- API'den gelen tarih formatı: `/Date(1234567890000)/`
+- Bu formatı parse etmek için özel bir decoder kullanılmalı
+- Tarih, Unix timestamp'in 1000'e bölünmüş hali
+- Zaman dilimi: Europe/Istanbul
+
+### Performans İpuçları
+1. Tüm kayıtları tek seferde çekmek için:
+   - Önce toplam kayıt sayısını öğren (pageSize=1)
+   - Sonra tüm kayıtları tek seferde çek (pageSize=totalRecords)
+
+2. Filtreleme işlemlerini client-side yap:
+   - Tüm verileri çek ve locale kaydet
+   - Arama ve filtreleme işlemlerini locale kayıtlar üzerinde yap
+
+3. Önbellek kullan:
+   - Benzersiz şehir, ilçe ve ürün gruplarını cache'le
+   - Favori ürünleri UserDefaults'ta sakla
+
+### Hata Yönetimi
+1. API Hataları:
+   - Network bağlantı hataları
+   - Geçersiz response format
+   - Boş data
+
+2. Veri Doğrulama:
+   - Tarih parse hatalarını kontrol et
+   - Boş veya null değerleri handle et
+   - HTML karakterleri temizle (stripHTML)
+
+## 5. Örnek Kullanım
+
+### API Çağrısı
+```swift
+let apiService = GidaAPIService()
+apiService.fetchFoodItems(page: 0, pageSize: 10) { result in
+    switch result {
+    case .success(let response):
+        // Başarılı response
+        let items = response.data
+        let total = response.recordsTotal
+    case .failure(let error):
+        // Hata durumu
+        print("API Hatası: \(error)")
+    }
+}
+```
+
+### Tarih Filtresi ile Çağrı
+```swift
+let date = Date()
+apiService.fetchFoodItems(page: 0, pageSize: 10, searchDate: date) { result in
+    // Handle response
+}
+```
+
+## 6. Güvenlik
+
+### Gerekli Headers
+- Origin ve Referer headerları doğru ayarlanmalı
+- Content-Type ve Accept headerları belirtilmeli
+
+### SSL/TLS
+- HTTPS kullanılmalı
+- Sertifika doğrulaması yapılmalı
+
+## 7. Sınırlamalar
+
+1. Rate Limiting:
+   - Çok sık istek atmaktan kaçın
+   - Hata durumunda retry mekanizması kullan
+
+2. Veri Boyutu:
+   - Büyük veri setlerinde pagination kullan
+   - Response boyutunu kontrol et
+
+3. Bağımlılıklar:
+   - Internet bağlantısı gerekli
+   - API erişilebilirliği kontrol edilmeli 
