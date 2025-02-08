@@ -106,7 +106,27 @@ final class HomeViewModel: ObservableObject {
             .sink { [weak self] completion in
                 self?.isLoading = false
                 if case .failure(let error) = completion {
-                    self?.error = error.localizedDescription
+                    switch error {
+                    case .networkError(let nsError as NSError):
+                        if nsError.domain == NSURLErrorDomain {
+                            switch nsError.code {
+                            case NSURLErrorNotConnectedToInternet:
+                                self?.error = "İnternet bağlantısı bulunamadı. Lütfen bağlantınızı kontrol edin ve tekrar deneyin."
+                            case NSURLErrorTimedOut:
+                                self?.error = "Sunucuya bağlanılamadı. Lütfen daha sonra tekrar deneyin."
+                            default:
+                                self?.error = "Bir ağ hatası oluştu. Lütfen daha sonra tekrar deneyin."
+                            }
+                        } else {
+                            self?.error = error.localizedDescription
+                        }
+                    case .serverError(let message):
+                        self?.error = "Sunucu hatası: \(message)"
+                    case .decodingError:
+                        self?.error = "Veri işlenirken bir hata oluştu. Lütfen daha sonra tekrar deneyin."
+                    default:
+                        self?.error = error.localizedDescription
+                    }
                 }
             } receiveValue: { [weak self] items in
                 self?.processItems(items)
@@ -116,7 +136,7 @@ final class HomeViewModel: ObservableObject {
     
     private func processItems(_ newItems: [FoodItem]) {
         let preferences = userPreferences.preferences
-        let lastFetch = lastFetchDate ?? Date.distantPast
+        let lastNotificationDate = UserDefaults.standard.object(forKey: "lastNotificationDate") as? Date ?? Date.distantPast
         
         let filteredItems = newItems
             .filter { $0.riskLevel.rawValue >= preferences.minimumRiskLevel.rawValue }
@@ -126,10 +146,14 @@ final class HomeViewModel: ObservableObject {
             }
             .sorted { $0.detectionDate > $1.detectionDate }
         
-        // Yeni eklenen öğeler için bildirim gönder
-        let newAddedItems = filteredItems.filter { $0.detectionDate > lastFetch }
-        newAddedItems.forEach { item in
-            notificationManager.scheduleNotification(for: item)
+        // Sadece son bildirim zamanından sonra gelen öğeler için bildirim gönder
+        let newAddedItems = filteredItems.filter { $0.detectionDate > lastNotificationDate }
+        if !newAddedItems.isEmpty {
+            newAddedItems.forEach { item in
+                notificationManager.scheduleNotification(for: item)
+            }
+            // Son bildirim zamanını güncelle
+            UserDefaults.standard.set(Date(), forKey: "lastNotificationDate")
         }
         
         allItems = filteredItems

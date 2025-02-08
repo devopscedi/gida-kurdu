@@ -1,5 +1,6 @@
 import UIKit
 import BackgroundTasks
+import UserNotifications
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication,
@@ -25,6 +26,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 // MARK: - Scene Phase
 extension AppDelegate {
     func applicationDidBecomeActive(_ application: UIApplication) {
+        // Badge sayısını sıfırla
         UIApplication.shared.applicationIconBadgeNumber = 0
     }
 } 

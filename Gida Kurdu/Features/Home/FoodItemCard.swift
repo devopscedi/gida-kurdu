@@ -172,20 +172,28 @@ struct RiskLevelBadge: View {
         }
     }
     
-    var body: some View {
-        HStack(spacing: 4) {
-            Circle()
-                .fill(color)
-                .frame(width: 8, height: 8)
-            
-            Text(level.description)
-                .font(.caption.weight(.medium))
-                .foregroundStyle(.white)
+    var text: String {
+        switch level {
+        case .low: return "Düşük"
+        case .medium: return "Orta"
+        case .high: return "Yüksek"
         }
-        .padding(.horizontal, 8)
-        .padding(.vertical, 4)
-        .background(color.gradient)
-        .clipShape(Capsule())
+    }
+    
+    var body: some View {
+        Text(text)
+            .font(.caption.weight(.medium))
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .background(
+                LinearGradient(
+                    colors: [color.opacity(0.2), color.opacity(0.1)],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+            )
+            .foregroundColor(color)
+            .clipShape(Capsule())
     }
 }
 

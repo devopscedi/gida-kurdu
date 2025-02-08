@@ -8,18 +8,6 @@ struct HomeView: View {
     @State private var showingCategoryPicker = false
     
     var body: some View {
-        NavigationStack {
-            contentView
-                .navigationDestination(for: FoodItem.self) { item in
-                    FoodItemDetailView(item: item)
-                }
-        }
-        .onAppear {
-            viewModel.fetchItems()
-        }
-    }
-    
-    private var contentView: some View {
         ScrollView(showsIndicators: false) {
             LazyVStack(spacing: 0) {
                 // Filtre seçenekleri
@@ -29,50 +17,67 @@ struct HomeView: View {
                         Button {
                             showingCityPicker = true
                         } label: {
-                            HStack {
+                            HStack(spacing: 4) {
                                 Image(systemName: "mappin.circle")
                                 Text(viewModel.selectedCity ?? "İl")
+                                    .lineLimit(1)
+                                    .truncationMode(.tail)
+                                Spacer(minLength: 0)
                             }
-                            .padding(.horizontal, 12)
+                            .padding(.horizontal, 8)
                             .padding(.vertical, 6)
                             .background(Color.gray.opacity(0.1))
-                            .cornerRadius(8)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
                         }
                         
                         // Tarih seçimi
                         Button {
                             showingDatePicker = true
                         } label: {
-                            HStack {
+                            HStack(spacing: 4) {
                                 Image(systemName: "calendar")
                                 Text(viewModel.selectedDate?.formatted(date: .abbreviated, time: .omitted) ?? "Tarih")
+                                    .lineLimit(1)
+                                    .truncationMode(.tail)
+                                Spacer(minLength: 0)
                             }
-                            .padding(.horizontal, 12)
+                            .padding(.horizontal, 8)
                             .padding(.vertical, 6)
                             .background(Color.gray.opacity(0.1))
-                            .cornerRadius(8)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
                         }
                         
                         // Ürün grubu seçimi
                         Button {
                             showingCategoryPicker = true
                         } label: {
-                            HStack {
+                            HStack(spacing: 4) {
                                 Image(systemName: "tag")
                                 Text(viewModel.selectedCategory ?? "Ürün Grubu")
+                                    .lineLimit(1)
+                                    .truncationMode(.tail)
+                                Spacer(minLength: 0)
                             }
-                            .padding(.horizontal, 12)
+                            .padding(.horizontal, 8)
                             .padding(.vertical, 6)
                             .background(Color.gray.opacity(0.1))
-                            .cornerRadius(8)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
                         }
                         
                         // Temizle butonu
                         Button {
                             viewModel.clearFilters()
                         } label: {
-                            Image(systemName: "xmark.circle.fill")
-                                .foregroundStyle(viewModel.hasActiveFilters ? .primary : .secondary)
+                            HStack {
+                                Spacer(minLength: 0)
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundStyle(viewModel.hasActiveFilters ? .primary : .secondary)
+                                Spacer(minLength: 0)
+                            }
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 6)
+                            .background(Color.gray.opacity(0.1))
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
                         }
                         .disabled(!viewModel.hasActiveFilters)
                     }
@@ -99,7 +104,12 @@ struct HomeView: View {
                         
                         // Liste
                         LazyVStack(spacing: 0) {
-                            foodItemsList
+                            ForEach(viewModel.foodItems) { item in
+                                NavigationLink(destination: FoodItemDetailView(item: item)) {
+                                    FoodItemCard(item: item)
+                                }
+                                .buttonStyle(.plain)
+                            }
                         }
                     }
                 }
@@ -112,11 +122,10 @@ struct HomeView: View {
                 }
             }
         }
-        .scrollBounceBehavior(.basedOnSize)
         .navigationTitle("Gıda Kurdu")
         .navigationBarTitleDisplayMode(.large)
-        .onChange(of: viewModel.foodItems) { _ in
-            print("Liste güncellendi: \(viewModel.foodItems.count) ürün var")
+        .onAppear {
+            viewModel.fetchItems()
         }
         .sheet(isPresented: $showingCityPicker) {
             cityPickerView
@@ -141,24 +150,26 @@ struct HomeView: View {
     }
     
     private var emptyView: some View {
-        ContentUnavailableView(
-            "Veri Bulunamadı",
-            systemImage: "magnifyingglass",
-            description: Text("Aradığınız kriterlere uygun veri bulunamadı.")
-        )
-    }
-    
-    private var foodItemsList: some View {
-        ForEach(viewModel.foodItems) { item in
-            NavigationLink(value: item) {
-                FoodItemCard(item: item)
-            }
-            .buttonStyle(.plain)
+        VStack(spacing: 16) {
+            Image(systemName: "magnifyingglass")
+                .font(.system(size: 48))
+                .foregroundColor(.secondary)
+            
+            Text("Veri Bulunamadı")
+                .font(.title2)
+                .fontWeight(.bold)
+            
+            Text("Aradığınız kriterlere uygun veri bulunamadı.")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
         }
+        .padding()
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
     
     private var cityPickerView: some View {
-        NavigationStack {
+        NavigationView {
             List(viewModel.availableCities, id: \.self) { city in
                 Button {
                     viewModel.selectedCity = city
@@ -181,7 +192,7 @@ struct HomeView: View {
     }
     
     private var datePicker: some View {
-        NavigationStack {
+        NavigationView {
             DatePicker(
                 "Tarih Seçin",
                 selection: Binding(
@@ -207,11 +218,10 @@ struct HomeView: View {
                 }
             }
         }
-        .presentationDetents([.medium])
     }
     
     private var categoryPicker: some View {
-        NavigationStack {
+        NavigationView {
             List(viewModel.availableCategories, id: \.self) { category in
                 Button {
                     viewModel.selectedCategory = category
@@ -230,20 +240,12 @@ struct HomeView: View {
             }
             .navigationTitle("Kategori Seçin")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Kapat") {
-                        showingCategoryPicker = false
-                    }
-                }
-            }
         }
-        .presentationDetents([.medium])
     }
 }
 
 #Preview {
-    NavigationStack {
+    NavigationView {
         HomeView()
     }
 } 

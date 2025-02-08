@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		D77B4DDCA6CC0E9D35955841 /* Pods_Gida_Kurdu.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 543731914AD882014D850D5A /* Pods_Gida_Kurdu.framework */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		77B786A62D404C7000F3717E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -24,9 +28,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		029ACF6DB9AC695EE09F68E2 /* Pods-Gida Kurdu.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Gida Kurdu.debug.xcconfig"; path = "Target Support Files/Pods-Gida Kurdu/Pods-Gida Kurdu.debug.xcconfig"; sourceTree = "<group>"; };
+		543731914AD882014D850D5A /* Pods_Gida_Kurdu.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Gida_Kurdu.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		77B786952D404C6E00F3717E /* Gida Kurdu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Gida Kurdu.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		77B786A52D404C7000F3717E /* Gida KurduTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Gida KurduTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		77B786AF2D404C7000F3717E /* Gida KurduUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Gida KurduUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7CAAFD4284706C967C43FFE6 /* Pods-Gida Kurdu.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Gida Kurdu.release.xcconfig"; path = "Target Support Files/Pods-Gida Kurdu/Pods-Gida Kurdu.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -48,16 +55,6 @@
 			path = "Gida Kurdu";
 			sourceTree = "<group>";
 		};
-		77B786A82D404C7000F3717E /* Gida KurduTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "Gida KurduTests";
-			sourceTree = "<group>";
-		};
-		77B786B22D404C7000F3717E /* Gida KurduUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "Gida KurduUITests";
-			sourceTree = "<group>";
-		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +62,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D77B4DDCA6CC0E9D35955841 /* Pods_Gida_Kurdu.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -89,9 +87,9 @@
 			isa = PBXGroup;
 			children = (
 				77B786972D404C6E00F3717E /* Gida Kurdu */,
-				77B786A82D404C7000F3717E /* Gida KurduTests */,
-				77B786B22D404C7000F3717E /* Gida KurduUITests */,
 				77B786962D404C6E00F3717E /* Products */,
+				8575EFABA4C397DCA8AC8FA1 /* Pods */,
+				B5D71CC5DB83ED92D7C5935B /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -105,6 +103,23 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		8575EFABA4C397DCA8AC8FA1 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				029ACF6DB9AC695EE09F68E2 /* Pods-Gida Kurdu.debug.xcconfig */,
+				7CAAFD4284706C967C43FFE6 /* Pods-Gida Kurdu.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		B5D71CC5DB83ED92D7C5935B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				543731914AD882014D850D5A /* Pods_Gida_Kurdu.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -112,6 +127,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 77B786B92D404C7000F3717E /* Build configuration list for PBXNativeTarget "Gida Kurdu" */;
 			buildPhases = (
+				921851EA85A14DE61CE02E88 /* [CP] Check Pods Manifest.lock */,
 				77B786912D404C6E00F3717E /* Sources */,
 				77B786922D404C6E00F3717E /* Frameworks */,
 				77B786932D404C6E00F3717E /* Resources */,
@@ -124,8 +140,6 @@
 				77B786972D404C6E00F3717E /* Gida Kurdu */,
 			);
 			name = "Gida Kurdu";
-			packageProductDependencies = (
-			);
 			productName = "Gida Kurdu";
 			productReference = 77B786952D404C6E00F3717E /* Gida Kurdu.app */;
 			productType = "com.apple.product-type.application";
@@ -143,12 +157,7 @@
 			dependencies = (
 				77B786A72D404C7000F3717E /* PBXTargetDependency */,
 			);
-			fileSystemSynchronizedGroups = (
-				77B786A82D404C7000F3717E /* Gida KurduTests */,
-			);
 			name = "Gida KurduTests";
-			packageProductDependencies = (
-			);
 			productName = "Gida KurduTests";
 			productReference = 77B786A52D404C7000F3717E /* Gida KurduTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -166,12 +175,7 @@
 			dependencies = (
 				77B786B12D404C7000F3717E /* PBXTargetDependency */,
 			);
-			fileSystemSynchronizedGroups = (
-				77B786B22D404C7000F3717E /* Gida KurduUITests */,
-			);
 			name = "Gida KurduUITests";
-			packageProductDependencies = (
-			);
 			productName = "Gida KurduUITests";
 			productReference = 77B786AF2D404C7000F3717E /* Gida KurduUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
@@ -243,6 +247,31 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		921851EA85A14DE61CE02E88 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Gida Kurdu-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		77B786912D404C6E00F3717E /* Sources */ = {
@@ -319,7 +348,6 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -382,7 +410,6 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -403,25 +430,34 @@
 		};
 		77B786BA2D404C7000F3717E /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 029ACF6DB9AC695EE09F68E2 /* Pods-Gida Kurdu.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Gida Kurdu/Preview Content\"";
 				DEVELOPMENT_TEAM = 9GUPF83KAH;
 				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Gıda Kurdu";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.food-and-drink";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = Assets.xcassets;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = "vsdv.Gida-Kurdu";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -432,25 +468,34 @@
 		};
 		77B786BB2D404C7000F3717E /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7CAAFD4284706C967C43FFE6 /* Pods-Gida Kurdu.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Gida Kurdu/Preview Content\"";
 				DEVELOPMENT_TEAM = 9GUPF83KAH;
 				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Gıda Kurdu";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.food-and-drink";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = Assets.xcassets;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = "vsdv.Gida-Kurdu";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -465,7 +510,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 9GUPF83KAH;
+				DEVELOPMENT_TEAM = YOUR_TEAM_ID;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
 				MARKETING_VERSION = 1.0;
@@ -484,7 +529,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 9GUPF83KAH;
+				DEVELOPMENT_TEAM = YOUR_TEAM_ID;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
 				MARKETING_VERSION = 1.0;
@@ -502,7 +547,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 9GUPF83KAH;
+				DEVELOPMENT_TEAM = YOUR_TEAM_ID;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "vsdv.Gida-KurduUITests";
@@ -519,7 +564,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 9GUPF83KAH;
+				DEVELOPMENT_TEAM = YOUR_TEAM_ID;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "vsdv.Gida-KurduUITests";

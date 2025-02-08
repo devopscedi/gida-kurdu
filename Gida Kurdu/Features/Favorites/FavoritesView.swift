@@ -11,11 +11,22 @@ struct FavoritesView: View {
     var body: some View {
         Group {
             if favoriteItems.isEmpty {
-                ContentUnavailableView(
-                    "Favori Öğe Yok",
-                    systemImage: "heart.slash",
-                    description: Text("Favori öğeleriniz burada görünecek")
-                )
+                VStack(spacing: 16) {
+                    Image(systemName: "heart.slash")
+                        .font(.system(size: 48))
+                        .foregroundColor(.secondary)
+                    
+                    Text("Favori Öğe Yok")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                    
+                    Text("Favori öğeleriniz burada görünecek")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                }
+                .padding()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 ScrollView {
                     // Favori Sayısı
@@ -50,7 +61,7 @@ struct FavoritesView: View {
 }
 
 #Preview {
-    NavigationStack {
+    NavigationView {
         FavoritesView()
     }
 } 

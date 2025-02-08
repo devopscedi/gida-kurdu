@@ -17,6 +17,9 @@ protocol FoodSafetyAPIProtocol {
 final class FoodSafetyAPI: FoodSafetyAPIProtocol {
     private let baseURL = "https://guvenilirgida.tarimorman.gov.tr/GuvenilirGida/GKD/DataTablesList"
     private let session: URLSession
+    private let requestQueue = DispatchQueue(label: "com.gidakurdu.networkQueue")
+    private var lastRequestTime: Date?
+    private let minimumRequestInterval: TimeInterval = 1.0 // Minimum 1 saniye aralık
     
     init(session: URLSession = .shared) {
         let config = URLSessionConfiguration.default
@@ -26,35 +29,56 @@ final class FoodSafetyAPI: FoodSafetyAPIProtocol {
     }
     
     func fetchFoodItems(page: Int, pageSize: Int) -> AnyPublisher<[FoodItem], APIError> {
-        var request = createBaseRequest()
-        request.httpBody = createRequestBody(page: page, pageSize: pageSize)
-        
-        return session.dataTaskPublisher(for: request)
-            .tryMap { data, response in
-                guard let httpResponse = response as? HTTPURLResponse else {
-                    throw APIError.invalidResponse
-                }
-                
-                guard (200...299).contains(httpResponse.statusCode) else {
-                    throw APIError.serverError("Status code: \(httpResponse.statusCode)")
-                }
-                
-                return data
+        return requestQueue.sync { () -> AnyPublisher<[FoodItem], APIError> in
+            // Rate limiting kontrolü
+            if let lastRequest = lastRequestTime,
+               Date().timeIntervalSince(lastRequest) < minimumRequestInterval {
+                return Fail(error: APIError.serverError("Çok fazla istek gönderildi. Lütfen biraz bekleyin."))
+                    .eraseToAnyPublisher()
             }
-            .decode(type: DataTablesResponse.self, decoder: JSONDecoder())
-            .map { response in
-                response.data.map { FoodItem(from: $0) }
-            }
-            .mapError { error in
-                if let apiError = error as? APIError {
-                    return apiError
+            
+            var request = createBaseRequest()
+            request.httpBody = createRequestBody(page: page, pageSize: pageSize)
+            
+            // Son istek zamanını güncelle
+            lastRequestTime = Date()
+            
+            return session.dataTaskPublisher(for: request)
+                .timeout(.seconds(30), scheduler: DispatchQueue.main) // 30 saniye timeout
+                .tryMap { data, response in
+                    guard let httpResponse = response as? HTTPURLResponse else {
+                        throw APIError.invalidResponse
+                    }
+                    
+                    switch httpResponse.statusCode {
+                    case 200...299:
+                        return data
+                    case 429:
+                        throw APIError.serverError("Rate limit aşıldı. Lütfen daha sonra tekrar deneyin.")
+                    case 500...599:
+                        throw APIError.serverError("Sunucu hatası. Lütfen daha sonra tekrar deneyin.")
+                    default:
+                        throw APIError.serverError("HTTP \(httpResponse.statusCode)")
+                    }
                 }
-                if error is DecodingError {
-                    return .decodingError
+                .decode(type: DataTablesResponse.self, decoder: JSONDecoder())
+                .map { response in
+                    response.data.map { apiFoodItem in
+                        FoodItem(from: apiFoodItem)
+                    }
                 }
-                return .networkError(error)
-            }
-            .eraseToAnyPublisher()
+                .mapError { error in
+                    if let apiError = error as? APIError {
+                        return apiError
+                    }
+                    if error is DecodingError {
+                        return APIError.decodingError
+                    }
+                    return APIError.networkError(error)
+                }
+                .receive(on: DispatchQueue.main)
+                .eraseToAnyPublisher()
+        }
     }
     
     func fetchFoodItemsByLocation(latitude: Double, longitude: Double, radius: Double) -> AnyPublisher<[FoodItem], APIError> {

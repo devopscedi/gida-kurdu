@@ -60,9 +60,24 @@ struct ProfileView: View {
                         TextField("E-posta", text: $viewModel.email)
                         TextField("Konum", text: $viewModel.location)
                     } else {
-                        LabeledContent("İsim", value: viewModel.name.isEmpty ? "Belirtilmemiş" : viewModel.name)
-                        LabeledContent("E-posta", value: viewModel.email.isEmpty ? "Belirtilmemiş" : viewModel.email)
-                        LabeledContent("Konum", value: viewModel.location.isEmpty ? "Belirtilmemiş" : viewModel.location)
+                        HStack {
+                            Text("İsim")
+                            Spacer()
+                            Text(viewModel.name.isEmpty ? "Belirtilmemiş" : viewModel.name)
+                                .foregroundColor(.secondary)
+                        }
+                        HStack {
+                            Text("E-posta")
+                            Spacer()
+                            Text(viewModel.email.isEmpty ? "Belirtilmemiş" : viewModel.email)
+                                .foregroundColor(.secondary)
+                        }
+                        HStack {
+                            Text("Konum")
+                            Spacer()
+                            Text(viewModel.location.isEmpty ? "Belirtilmemiş" : viewModel.location)
+                                .foregroundColor(.secondary)
+                        }
                     }
                 }
             }
@@ -91,15 +106,15 @@ struct ProfileView: View {
             }
         }
         .navigationTitle("Profil")
-        .toolbar {
+        .navigationBarItems(trailing: Group {
             if !viewModel.name.isEmpty || !viewModel.email.isEmpty {
                 Button(isEditing ? "Kaydet" : "Düzenle") {
                     isEditing.toggle()
                 }
             }
-        }
+        })
         .sheet(isPresented: $showingEditSheet) {
-            NavigationStack {
+            NavigationView {
                 Form {
                     Section("Profil Bilgileri") {
                         TextField("İsim", text: $viewModel.name)
@@ -109,20 +124,15 @@ struct ProfileView: View {
                 }
                 .navigationTitle("Profili Düzenle")
                 .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button("İptal") {
-                            showingEditSheet = false
-                        }
+                .navigationBarItems(
+                    leading: Button("İptal") {
+                        showingEditSheet = false
+                    },
+                    trailing: Button("Kaydet") {
+                        showingEditSheet = false
                     }
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button("Kaydet") {
-                            showingEditSheet = false
-                        }
-                    }
-                }
+                )
             }
-            .presentationDetents([.medium])
         }
     }
 }
@@ -166,11 +176,22 @@ struct NotificationHistoryView: View {
     var body: some View {
         Group {
             if viewModel.notifications.isEmpty {
-                ContentUnavailableView(
-                    "Bildirim Yok",
-                    systemImage: "bell.slash",
-                    description: Text("Henüz hiç bildirim almadınız")
-                )
+                VStack(spacing: 16) {
+                    Image(systemName: "bell.slash")
+                        .font(.system(size: 48))
+                        .foregroundColor(.secondary)
+                    
+                    Text("Bildirim Yok")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                    
+                    Text("Henüz hiç bildirim almadınız")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                }
+                .padding()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 List {
                     ForEach(viewModel.notifications) { notification in
@@ -206,7 +227,7 @@ struct NotificationHistoryView: View {
 }
 
 #Preview {
-    NavigationStack {
+    NavigationView {
         ProfileView()
     }
 } 

@@ -5,25 +5,28 @@ struct ContentView: View {
     
     var body: some View {
         TabView {
-            NavigationStack {
+            NavigationView {
                 HomeView()
             }
+            .navigationViewStyle(StackNavigationViewStyle())
             .tabItem {
                 Label("Ana Sayfa", systemImage: "house")
             }
             .tag(0)
             
-            NavigationStack {
+            NavigationView {
                 FavoritesView()
             }
+            .navigationViewStyle(StackNavigationViewStyle())
             .tabItem {
                 Label("Favoriler", systemImage: "heart")
             }
             .tag(1)
             
-            NavigationStack {
+            NavigationView {
                 SettingsView()
             }
+            .navigationViewStyle(StackNavigationViewStyle())
             .tabItem {
                 Label("Ayarlar", systemImage: "gear")
             }

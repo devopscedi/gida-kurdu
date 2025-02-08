@@ -5,6 +5,23 @@ import CoreLocation
 struct MapOverviewView: View {
     @StateObject private var locationManager = LocationManager.shared
     @StateObject private var viewModel = HomeViewModel()
+    @State private var region = MKCoordinateRegion(
+        center: CLLocationCoordinate2D(latitude: 41.0082, longitude: 28.9784),
+        span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+    )
+    
+    private var annotationItems: [MapAnnotationItem] {
+        viewModel.foodItems.compactMap { item in
+            guard let lat = item.location.latitude,
+                  let lon = item.location.longitude else { return nil }
+            return MapAnnotationItem(
+                id: item.id,
+                coordinate: CLLocationCoordinate2D(latitude: lat, longitude: lon),
+                title: item.productName,
+                riskLevel: item.riskLevel
+            )
+        }
+    }
     
     var body: some View {
         Group {
@@ -23,27 +40,29 @@ struct MapOverviewView: View {
     }
     
     private var mapView: some View {
-        Map(position: .constant(.region(MKCoordinateRegion(
-            center: locationManager.location?.coordinate ?? CLLocationCoordinate2D(latitude: 41.0082, longitude: 28.9784),
-            span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
-        )))) {
-            // Kullanıcının konumu
-            if let location = locationManager.location {
-                Marker("Konumunuz", coordinate: location.coordinate)
-                    .tint(.blue)
-            }
-            
-            // Gıda ürünleri
-            ForEach(viewModel.foodItems) { item in
-                if let lat = item.location.latitude,
-                   let lon = item.location.longitude {
-                    let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: lon)
-                    Marker(item.productName, coordinate: coordinate)
-                        .tint(markerColor(for: item.riskLevel))
+        Map(coordinateRegion: $region,
+            showsUserLocation: true,
+            annotationItems: annotationItems) { (item: MapAnnotationItem) in
+            MapAnnotation(coordinate: item.coordinate) {
+                VStack {
+                    Image(systemName: "mappin.circle.fill")
+                        .font(.title)
+                        .foregroundColor(markerColor(for: item.riskLevel))
+                        .background(Circle().fill(.white))
+                    
+                    Text(item.title)
+                        .font(.caption)
+                        .padding(4)
+                        .background(Color.white)
+                        .cornerRadius(4)
+                        .shadow(radius: 2)
                 }
             }
         }
         .onAppear {
+            if let location = locationManager.location {
+                region.center = location.coordinate
+            }
             viewModel.fetchItems()
         }
     }
@@ -99,6 +118,13 @@ struct MapOverviewView: View {
         case .high: return .red
         }
     }
+}
+
+struct MapAnnotationItem: Identifiable {
+    let id: String
+    let coordinate: CLLocationCoordinate2D
+    let title: String
+    let riskLevel: FoodItem.RiskLevel
 }
 
 #Preview {
